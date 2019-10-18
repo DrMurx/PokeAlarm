@@ -14,11 +14,11 @@ EXPOSE 4000
 # Working directory for the application
 WORKDIR /usr/src/app
 
-# Set Entrypoint with hard-coded options
-ENTRYPOINT ["python", "./start_pokealarm.py", "--host", "0.0.0.0"]
+# Entrypoint script
+ENTRYPOINT ["/usr/src/app/tools/docker-entrypoint.sh"]
 
 # Install required system packages
-RUN apk add --no-cache ca-certificates bash openssh
+RUN apk add --no-cache ca-certificates bash openssh inotify-tools
 
 COPY requirements.txt /usr/src/app/
 
