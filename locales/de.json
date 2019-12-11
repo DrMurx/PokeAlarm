@@ -163,13 +163,13 @@
     },
     "412": {
       "118": "Pflanze",
-      "119": "Sandig",
-      "120": "M\u00FCll"
+      "119": "Sand",
+      "120": "Lumpen"
     },
     "413": {
       "087": "Pflanze",
-      "088": "Sandig",
-      "089": "M\u00FCll"
+      "088": "Sand",
+      "089": "Lumpen"
     },
     "421": {
       "094": "Bedeckt",
@@ -192,8 +192,8 @@
       "086": "Hitze"
     },
     "487": {
-      "090": "Ge\u00E4ndert",
-      "091": "Ursprung"
+      "090": "Wandelform",
+      "091": "Urform"
     },
     "492": {
       "092": "Himmel",
