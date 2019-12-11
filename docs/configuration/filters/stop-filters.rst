@@ -35,6 +35,19 @@ The ``"stops"`` section has three distinct settings.
 Available DTS
 -------------------------------------
 
+General
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+=============== ======================================== ===========================
+Parameter       Description                              Example
+=============== ======================================== ===========================
+lures           Array of allowed lures, by id or name.   ``["Standard","501",502]``
+lures_exclude   Array of excluded lures, by id or name.  ``["Standard","501",502]``
+grunts          Array of allowed grunts, by id or name.  ``["Dragon","4",39]``
+grunts_exclude  Array of excluded grunts, by id or name. ``["Normal","4",39]``
+=============== ======================================== ===========================
+
+
 Miscellaneous
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

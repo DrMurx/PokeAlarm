@@ -3,6 +3,7 @@ import operator
 # 3rd Party Imports
 # Local Imports
 from . import BaseFilter
+from PokeAlarm.Utilities import StopUtils as StopUtils
 
 
 class StopFilter(BaseFilter):
@@ -11,6 +12,32 @@ class StopFilter(BaseFilter):
     def __init__(self, mgr, name, data):
         """ Initializes base parameters for a filter. """
         super(StopFilter, self).__init__(mgr, 'egg', name)
+
+        # Lures
+        self.lure_ids = self.evaluate_attribute(
+            event_attribute='lure_type_id', eval_func=operator.contains,
+            limit=BaseFilter.parse_as_set(
+                StopUtils.get_lure_id, 'lures', data))
+
+        # Exclude Lures
+        self.exclude_lure_ids = self.evaluate_attribute(
+            event_attribute='lure_type_id',
+            eval_func=lambda d, v: not operator.contains(d, v),
+            limit=BaseFilter.parse_as_set(
+                StopUtils.get_lure_id, 'lures_exclude', data))
+
+        # Grunts
+        self.grunt_ids = self.evaluate_attribute(
+            event_attribute='grunt_type_id', eval_func=operator.contains,
+            limit=BaseFilter.parse_as_set(
+                StopUtils.get_grunt_id, 'grunts', data))
+
+        # Exclude Grunts
+        self.exclude_grunt_ids = self.evaluate_attribute(
+            event_attribute='grunt_type_id',
+            eval_func=lambda d, v: not operator.contains(d, v),
+            limit=BaseFilter.parse_as_set(
+                StopUtils.get_grunt_id, 'grunts_exclude', data))
 
         # Distance
         self.min_dist = self.evaluate_attribute(  # f.min_dist <= m.distance
@@ -49,6 +76,13 @@ class StopFilter(BaseFilter):
     def to_dict(self):
         """ Create a dict representation of this Filter. """
         settings = {}
+        # Lures
+        if self.lure_ids is not None:
+            settings['lure_ids'] = self.lure_ids
+
+        # Grunts
+        if self.grunt_ids is not None:
+            settings['grunt_ids'] = self.grunt_ids
 
         # Distance
         if self.min_dist is not None:

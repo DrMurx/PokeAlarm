@@ -14,15 +14,30 @@ class StopEvent(BaseEvent):
     def __init__(self, data):
         """ Creates a new Stop Event based on the given dict. """
         super(StopEvent, self).__init__('stop')
+        check_for_none = BaseEvent.check_for_none
 
         # Identification
         self.stop_id = data['pokestop_id']
 
+        # Details
+        self.stop_name = check_for_none(
+            str, data.get('pokestop_name') or data.get('name'), Unknown.REGULAR)
+        self.stop_image = check_for_none(
+            str, data.get('pokestop_url') or data.get('url'), Unknown.REGULAR)
+        self.lure_type_id = check_for_none(int, data.get('lure_id'), 0)
+
         # Time left
-        self.expiration = data['lure_expiration']
+        if self.lure_type_id > 0:
+            self.expiration = datetime.utcfromtimestamp(data.get('lure_expiration'))
+            self.grunt_type_id = None
+        else:
+            self.expiration = datetime.utcfromtimestamp(
+                data.get('incident_expiration') or data.get('incident_expire_timestamp'))
+            self.grunt_type_id = check_for_none(
+                int, data.get('incident_grunt_type') or data.get('grunt_type'), 0)
+
         self.time_left = None
         if self.expiration is not None:
-            self.expiration = datetime.utcfromtimestamp(self.expiration)
             self.time_left = get_seconds_remaining(self.expiration)
 
         # Location
@@ -46,6 +61,18 @@ class StopEvent(BaseEvent):
             # Identification
             'stop_id': self.stop_id,
 
+            # Details
+            'stop_name': self.stop_name,
+            'stop_image': self.stop_image,
+            'lure_type_id': self.lure_type_id,
+            'lure_type_name': locale.get_lure_type_name(self.lure_type_id),
+            'grunt_type_id': (
+                Unknown.TINY if self.grunt_type_id is None
+                else self.grunt_type_id),
+            'grunt_type_name': (
+                Unknown.SMALL if self.grunt_type_id is None
+                else locale.get_grunt_type_name(self.grunt_type_id)),
+
             # Time left
             'time_left': time[0],
             '12h_time': time[1],
@@ -61,7 +88,7 @@ class StopEvent(BaseEvent):
             'lat': self.lat,
             'lng': self.lng,
             'lat_5': "{:.5f}".format(self.lat),
-            'lng_5': "{:.5f}".format(self.lat),
+            'lng_5': "{:.5f}".format(self.lng),
             'distance': (
                 get_dist_as_str(self.distance, units)
                 if Unknown.is_not(self.distance) else Unknown.SMALL),
